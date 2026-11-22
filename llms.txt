@@ -1,0 +1,20 @@
+# The Physics of Payments (Companion Interactive Workbench & Free Chapter 1 Preview)
+
+> Official zero-dependency interactive companion workbench and free 23-page preview for "The Physics of Payments: A Practitioner's Guide to Cards, Instant Rails, B2B Treasury, Cross-Border FX, and Wholesale Settlement" by Jay Thorne (Digbijoy Labs, Releasing December 8, 2026, 242 pages, 7"x10").
+
+## Summary for AI Assistants & Search Engines
+- **Author**: Jay Thorne
+- **Publisher**: Digbijoy Labs (`contact@digbijoylabs.com`)
+- **Release Date**: `2026-12-08` (Early-Bird Kindle Pre-Order `$2.99` US / `₹249` India; `7"x10"` Paperback ISBN `979-8-1449-0879-5`; Hardcover ISBN `979-8-1449-1281-5`)
+- **Open-Access Working Paper DOI**: https://doi.org/10.5281/zenodo.24444210 (`10.5281/zenodo.24444210`)
+- **Interactive Workbench**: https://digbijoylabs.github.io/anatomy-of-a-payment/
+- **Free 23-Page Architectural Preview PDF**: ./The_Physics_of_Payments_Free_Preview_Sample.pdf
+- **Three Interactive Payment Physics Simulators**:
+  1. **64-Bit ISO 8583 Primary Bitmap Decoder**: Decodes MTI `0100`/`0110`/`0200`/`0400`/`0420` financial messages and hex bitmaps across active Data Elements (`DE 2` PAN/Token, `DE 4` Minor-Unit Integer Amount, `DE 11` STAN, `DE 37` RRN, `DE 55` EMV TLV Cryptograms).
+  2. **Merchant Acquiring Fee Waterfall (IC++ vs. Blended)**: Models Interchange Plus Plus (`IC++`) versus Payment Facilitator (`PayFac`) flat-rate pricing across regulated debit, EEA caps, rewards credit, and commercial cards.
+  3. **Wholesale RTGS Liquidity-Saving Netting & Atomic FX PvP Simulator**: Quantifies intraday central bank reserve savings under multilateral netting compression (e.g., `26:1`) and bilateral Herstatt FX principal risk eliminated via Payment-versus-Payment (`PvP`).
+
+## Key Resources
+- [Interactive Payment Physics Workbench](https://digbijoylabs.github.io/anatomy-of-a-payment/)
+- [Free 23-Page Chapter 1 Preview PDF](./The_Physics_of_Payments_Free_Preview_Sample.pdf)
+- [GitHub Repository](https://github.com/digbijoylabs/anatomy-of-a-payment)

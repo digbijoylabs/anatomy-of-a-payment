@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Physics of Payments — ISO 8583 Decoder, IC++ Acquiring &amp; RTGS Netting Workbench</title>
+  <meta name="description" content="Interactive ISO 8583 bitmap parser, Interchange Plus Plus (IC++) acquiring economics simulator, and Wholesale RTGS / FX PvP liquidity netting calculator accompanying The Physics of Payments by Jay Thorne (Digbijoy Labs)." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "The Physics of Payments Interactive Engineering Workbench",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "Jay Thorne" },
+    "publisher": { "@type": "Organization", "name": "Digbijoy Labs", "email": "contact@digbijoylabs.com" }
+  }
+  </script>
+  <style>
+    :root, [data-theme="dark"] {
+      --bg: #0f141c;
+      --card: #18202c;
+      --input-bg: #0d1117;
+      --border: #2e3b4e;
+      --text: #e6edf3;
+      --muted: #9fb0c3;
+      --accent: #e5b95c;
+      --blue: #79c0ff;
+      --green: #56d364;
+      --active-bg: #1f3528;
+    }
+    [data-theme="light"] {
+      --bg: #f6f4ef;
+      --card: #ffffff;
+      --input-bg: #f8fafc;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #9a6618;
+      --blue: #0f766e;
+      --green: #15803d;
+      --active-bg: #dcfce7;
+    }
+    [data-theme="circadian"] {
+      --bg: #1c1610;
+      --card: #261e16;
+      --input-bg: #15100b;
+      --border: #4a3b2a;
+      --text: #f5e9d6;
+      --muted: #cbb698;
+      --accent: #eab354;
+      --blue: #e09f5a;
+      --green: #7bc47f;
+      --active-bg: #243824;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding: 28px 18px 60px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .container { max-width: 1160px; margin: 0 auto; }
+    header {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .eyebrow {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      color: var(--accent);
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .theme-bar button {
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+    .theme-bar button:focus-visible, input:focus-visible, select:focus-visible, .nav-links a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    h1 { margin: 8px 0 10px; font-size: 1.85rem; }
+    .subtitle { color: var(--muted); margin: 0 0 16px; }
+    .nav-links a {
+      display: inline-block;
+      margin-right: 12px;
+      margin-top: 6px;
+      padding: 7px 13px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+    }
+    h2 { margin-top: 0; font-size: 1.22rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    label { display: block; font-size: 0.9rem; color: var(--muted); margin: 12px 0 5px; }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.95rem;
+    }
+    .bit-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 6px;
+      margin-top: 14px;
+    }
+    .bit-cell {
+      padding: 6px 4px;
+      text-align: center;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.78rem;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--muted);
+    }
+    .bit-cell.active {
+      background: var(--active-bg);
+      border-color: var(--green);
+      color: var(--text);
+      font-weight: 700;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 0.88rem;
+    }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 8px 6px;
+      text-align: left;
+    }
+    th { color: var(--accent); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.92rem;
+    }
+    .highlight { color: var(--accent); font-weight: 700; }
+    footer {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="top-row">
+        <div class="eyebrow">Digbijoy Labs // Open-Source Payment Infrastructure Workbench</div>
+        <div class="theme-bar" role="group" aria-label="Color theme selector">
+          <button type="button" onclick="setTheme('light')">Light</button>
+          <button type="button" onclick="setTheme('dark')">Dark</button>
+          <button type="button" onclick="setTheme('circadian')">Circadian</button>
+        </div>
+      </div>
+      <h1>The Physics of Payments — Protocol, Acquiring &amp; RTGS Netting Workbench</h1>
+      <p class="subtitle">Companion interactive simulator for <strong>The Physics of Payments: A Practitioner's Guide to Cards, Instant Rails, B2B Treasury, Cross-Border FX, and Wholesale Settlement</strong> by Jay Thorne (Digbijoy Labs) &bull; <strong>Releasing December 8, 2026</strong> (Early-Bird Pre-Order Open).</p>
+      <div class="nav-links">
+        <a href="./The_Physics_of_Payments_Free_Preview_Sample.pdf">Read Free Ch. 1 Preview (PDF)</a>
+        <a href="https://doi.org/10.5281/zenodo.24444210">Zenodo Working Paper (DOI)</a>
+        <a href="https://github.com/digbijoylabs/anatomy-of-a-payment">GitHub Repository</a>
+        <a href="https://www.youtube.com/@TheNeuralBlueprintLab">The Neural Blueprint (YouTube)</a>
+        <a href="https://digbijoylabs.github.io/beyond-the-prompt/">Agent Loop Calculator</a>
+        <a href="https://digbijoylabs.github.io/iron-silicon-bridge/">Mainframe 4HRA &amp; COMP-3 Workbench</a>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="panel" aria-labelledby="h-iso">
+        <h2 id="h-iso">1. Interactive ISO 8583 Primary Bitmap (64-Bit) Decoder</h2>
+        <label for="mtiSelect">Message Type Indicator (MTI)</label>
+        <select id="mtiSelect" onchange="decodeBitmap()">
+          <option value="0100" selected>0100 — Authorization Request (Acquirer &rarr; Switch &rarr; Issuer)</option>
+          <option value="0110">0110 — Authorization Response (Issuer &rarr; Switch &rarr; Acquirer)</option>
+          <option value="0200">0200 — Financial Presentment / Single-Message Debit</option>
+          <option value="0400">0400 — Acquirer Full/Partial Reversal Request</option>
+          <option value="0420">0420 — Acquirer Reversal Advice (Timeout / Stand-In)</option>
+        </select>
+
+        <label for="hexBitmap">Primary 16-Hex-Character Bitmap (64 Data Elements)</label>
+        <input id="hexBitmap" type="text" value="723800010AE08000" maxlength="16" oninput="decodeBitmap()" />
+
+        <div id="bitGrid" class="bit-grid"></div>
+
+        <table>
+          <thead>
+            <tr><th>DE #</th><th>ISO 8583 Field Name</th><th>Role in Payment Lifecycle</th></tr>
+          </thead>
+          <tbody id="deTableBody"></tbody>
+        </table>
+      </section>
+
+      <section class="panel" aria-labelledby="h-ic">
+        <h2 id="h-ic">2. Merchant Acquiring Waterfall: IC++ vs. Blended Pricing</h2>
+        <label for="monthlyVol">Monthly Card Processing Volume (USD)</label>
+        <input id="monthlyVol" type="number" value="500000" step="10000" oninput="calcPricing()" />
+
+        <label for="avgTicket">Average Order / Ticket Size (USD)</label>
+        <input id="avgTicket" type="number" value="62.50" step="2.50" oninput="calcPricing()" />
+
+        <label for="icRate">Weighted Issuer Interchange Tier (% + fixed cents)</label>
+        <select id="icRate" onchange="calcPricing()">
+          <option value="1.65,0.10" selected>Consumer Rewards Credit (1.65% + $0.10)</option>
+          <option value="0.05,0.21">Regulated US Durbin Covered Debit (0.05% + $0.21)</option>
+          <option value="0.20,0.00">EEA Regulated Consumer Debit Cap (0.20% + $0.00)</option>
+          <option value="2.40,0.10">Commercial / Corporate Purchasing Card (2.40% + $0.10)</option>
+        </select>
+
+        <label for="schemeFee">Global Card Network Assessment Fee (%)</label>
+        <input id="schemeFee" type="number" value="0.14" step="0.01" oninput="calcPricing()" />
+
+        <label for="acquirerMarkup">Acquirer IC++ Markup (% + fixed cents per tx)</label>
+        <input id="acquirerMarkup" type="text" value="0.20,0.05" oninput="calcPricing()" />
+
+        <label for="blendedQuote">PayFac / Blended Flat-Rate Quote (% + fixed cents)</label>
+        <input id="blendedQuote" type="text" value="2.90,0.30" oninput="calcPricing()" />
+
+        <div style="margin-top: 18px;">
+          <div class="metric-row"><span>Total Monthly Transactions:</span><span id="outTxCount">0</span></div>
+          <div class="metric-row"><span>Issuer Interchange Cost:</span><span id="outInterchange">$0</span></div>
+          <div class="metric-row"><span>Card Network Assessments:</span><span id="outScheme">$0</span></div>
+          <div class="metric-row"><span>Acquirer Markup (IC++):</span><span id="outMarkup">$0</span></div>
+          <div class="metric-row"><span><strong>Total Monthly Cost on IC++:</strong></span><span id="outTotalIC" class="highlight">$0</span></div>
+          <div class="metric-row"><span><strong>Total Monthly Cost on Blended Quote:</strong></span><span id="outTotalBlended">$0</span></div>
+          <div class="metric-row"><span><strong>Annual Net Savings on IC++ Acquiring:</strong></span><span id="outAnnualSavings" class="highlight">$0 / yr</span></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="h-rtgs">
+      <h2 id="h-rtgs">3. Wholesale RTGS Liquidity-Saving Netting &amp; Atomic FX PvP Exposure Simulator (Ch. 13–15)</h2>
+      <div class="grid" style="margin-bottom: 0;">
+        <div>
+          <label for="grossWholesale">Daily Gross Interbank Payment Obligations (USD Billions)</label>
+          <input id="grossWholesale" type="number" value="1800" step="100" oninput="calcNetting()" />
+
+          <label for="netRatio">Multilateral Liquidity-Saving Compression Ratio (X : 1)</label>
+          <input id="netRatio" type="number" value="26" step="1" min="1" oninput="calcNetting()" />
+
+          <label for="fxNotional">Cross-Border FX Gross Notional Settled via Atomic PvP (%)</label>
+          <input id="fxNotional" type="number" value="99" step="0.5" min="0" max="100" oninput="calcNetting()" />
+        </div>
+        <div>
+          <div class="metric-row"><span>Pure RTGS Pre-Funded Liquidity Peak (~15% Turnover):</span><span id="outRtgsPeak">$0B</span></div>
+          <div class="metric-row"><span>Pre-Funded Central Bank Reserves with LSM Netting:</span><span id="outNettedReserves" class="highlight">$0B</span></div>
+          <div class="metric-row"><span>Intraday Reserve Liquidity Freed Across Banks:</span><span id="outLiquiditySaved" class="highlight">$0B</span></div>
+          <div class="metric-row"><span>Unhedged Herstatt Principal Risk Eliminated via PvP:</span><span id="outPvpProtected">$0B</span></div>
+          <div class="metric-row"><span>Residual Bilateral FX Principal Exposure:</span><span id="outResidualFx">$0B</span></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Published by Digbijoy Labs &bull; Errata &amp; institutional inquiries: <code>contact@digbijoylabs.com</code>
+    </footer>
+  </div>
+
+  <script>
+    function setTheme(mode) {
+      if (mode === "circadian") {
+        const hr = new Date().getHours();
+        document.documentElement.setAttribute("data-theme", (hr >= 19 || hr < 7) ? "circadian" : "light");
+      } else {
+        document.documentElement.setAttribute("data-theme", mode);
+      }
+      try { localStorage.setItem("dl_payments_theme", mode); } catch (_) {}
+    }
+    (function initTheme() {
+      let saved = null;
+      try { saved = localStorage.getItem("dl_payments_theme"); } catch (_) {}
+      if (saved) setTheme(saved);
+      else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+    })();
+
+    const DE_MAP = {
+      1: ["Secondary Bitmap Present", "Indicates bits 65-128 follow"],
+      2: ["Primary Account Number (PAN)", "Cardholder PAN or EMVCo Network Token"],
+      3: ["Processing Code", "Transaction type (00=Purchase, 20=Refund) + Account"],
+      4: ["Amount, Transaction", "Authorized amount in minor integer units (cents)"],
+      7: ["Transmission Date & Time", "MMDDhhmmss UTC switch timestamp"],
+      11: ["Systems Trace Audit Number (STAN)", "6-digit unique trace for auth/reversal matching"],
+      12: ["Time, Local Transaction", "hhmmss at merchant terminal/gateway"],
+      13: ["Date, Local Transaction", "MMDD at merchant terminal/gateway"],
+      14: ["Date, Expiration", "YYMM card/token expiry"],
+      18: ["Merchant Category Code (MCC)", "4-digit ISO 18245 merchant classification"],
+      22: ["Point of Service Entry Mode", "Chip (05), Contactless (07), E-Commerce (81)"],
+      32: ["Acquiring Institution ID Code", "BIN/ICA of the Merchant Acquirer"],
+      37: ["Retrieval Reference Number (RRN)", "12-char key linking Auth, Clearing & Dispute"],
+      38: ["Authorization Identification Response", "6-char approval code returned by Issuer"],
+      39: ["Response Code", "00=Approved, 05=Do Not Honor, 51=Insufficient Funds"],
+      41: ["Card Acceptor Terminal ID (TID)", "8-char terminal or gateway identifier"],
+      42: ["Card Acceptor Identification Code (MID)", "15-char Merchant ID assigned by Acquirer"],
+      43: ["Card Acceptor Name/Location", "Billing descriptor shown on cardholder statement"],
+      49: ["Currency Code, Transaction", "ISO 4217 numeric code (840=USD, 978=EUR, 702=SGD)"],
+      55: ["ICC / EMV Data (TLV)", "Cryptogram ARQC (9F26), UN (9F37), ATC (9F36)"]
+    };
+
+    function decodeBitmap() {
+      const hex = (document.getElementById("hexBitmap").value || "").trim().toUpperCase().padEnd(16, "0");
+      const grid = document.getElementById("bitGrid");
+      const tbody = document.getElementById("deTableBody");
+      grid.innerHTML = "";
+      tbody.innerHTML = "";
+
+      let bits = "";
+      for (let i = 0; i < 16; i++) {
+        const val = parseInt(hex[i], 16);
+        bits += (isNaN(val) ? 0 : val).toString(2).padStart(4, "0");
+      }
+
+      for (let b = 1; b <= 64; b++) {
+        const active = bits[b - 1] === "1";
+        const cell = document.createElement("div");
+        cell.className = "bit-cell" + (active ? " active" : "");
+        cell.textContent = "DE" + b;
+        grid.appendChild(cell);
+
+        if (active) {
+          const info = DE_MAP[b] || ["ISO 8583 Data Element " + b, "Standard protocol field"];
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td><strong>DE ${b}</strong></td><td>${info[0]}</td><td>${info[1]}</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+    }
+
+    function parsePair(str) {
+      const parts = (str || "0,0").split(",");
+      return [parseFloat(parts[0]) || 0, parseFloat(parts[1]) || 0];
+    }
+
+    function fmtUSD(n) {
+      return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function fmtB(n) {
+      return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "B";
+    }
+
+    function calcPricing() {
+      const vol = parseFloat(document.getElementById("monthlyVol").value) || 0;
+      const ticket = Math.max(0.01, parseFloat(document.getElementById("avgTicket").value) || 1);
+      const txCount = Math.round(vol / ticket);
+
+      const [icPct, icFix] = parsePair(document.getElementById("icRate").value);
+      const schemePct = parseFloat(document.getElementById("schemeFee").value) || 0;
+      const [mkPct, mkFix] = parsePair(document.getElementById("acquirerMarkup").value);
+      const [blPct, blFix] = parsePair(document.getElementById("blendedQuote").value);
+
+      const icCost = vol * (icPct / 100) + txCount * icFix;
+      const schemeCost = vol * (schemePct / 100);
+      const mkCost = vol * (mkPct / 100) + txCount * mkFix;
+      const totalIC = icCost + schemeCost + mkCost;
+      const totalBlended = vol * (blPct / 100) + txCount * blFix;
+      const annualSavings = (totalBlended - totalIC) * 12;
+
+      document.getElementById("outTxCount").textContent = txCount.toLocaleString("en-US");
+      document.getElementById("outInterchange").textContent = fmtUSD(icCost);
+      document.getElementById("outScheme").textContent = fmtUSD(schemeCost);
+      document.getElementById("outMarkup").textContent = fmtUSD(mkCost);
+      document.getElementById("outTotalIC").textContent = fmtUSD(totalIC);
+      document.getElementById("outTotalBlended").textContent = fmtUSD(totalBlended);
+      document.getElementById("outAnnualSavings").textContent = fmtUSD(annualSavings) + " / yr";
+    }
+
+    function calcNetting() {
+      const grossB = Math.max(0, parseFloat(document.getElementById("grossWholesale").value) || 0);
+      const ratio = Math.max(1, parseFloat(document.getElementById("netRatio").value) || 1);
+      const pvpPct = Math.min(100, Math.max(0, parseFloat(document.getElementById("fxNotional").value) || 0));
+
+      const rtgsPeak = grossB * 0.15;
+      const nettedRes = grossB / ratio;
+      const saved = Math.max(0, rtgsPeak - nettedRes);
+      const pvpProtected = grossB * (pvpPct / 100);
+      const residual = grossB - pvpProtected;
+
+      document.getElementById("outRtgsPeak").textContent = fmtB(rtgsPeak);
+      document.getElementById("outNettedReserves").textContent = fmtB(nettedRes);
+      document.getElementById("outLiquiditySaved").textContent = fmtB(saved);
+      document.getElementById("outPvpProtected").textContent = fmtB(pvpProtected);
+      document.getElementById("outResidualFx").textContent = fmtB(residual);
+    }
+
+    decodeBitmap();
+    calcPricing();
+    calcNetting();
+  </script>
+</body>
+</html>

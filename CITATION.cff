@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this interactive payment infrastructure workbench or architectural blueprints, please cite the accompanying book."
+title: "The Physics of Payments: A Practitioner's Guide to Cards, Instant Rails, B2B Treasury, Cross-Border FX, and Wholesale Settlement"
+authors:
+  - family-names: "Thorne"
+    given-names: "Jay"
+    affiliation: "Digbijoy Labs"
+publisher:
+  name: "Digbijoy Labs"
+date-released: "2026-12-08"
+doi: "10.5281/zenodo.24444210"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24444210"
+    description: "CERN Zenodo Open-Access Working Paper"
+  - type: other
+    value: "979-8-1449-0879-5"
+    description: "Paperback ISBN-13"
+  - type: other
+    value: "979-8-1449-1281-5"
+    description: "Hardcover ISBN-13"
+license: "Apache-2.0"
+repository-code: "https://github.com/digbijoylabs/anatomy-of-a-payment"
+url: "https://digbijoylabs.github.io/anatomy-of-a-payment/"
+keywords:
+  - payment systems
+  - ISO 8583
+  - ISO 20022
+  - merchant acquiring
+  - real-time payments
+  - UPI
+  - Pix
+  - FedNow
+  - RTGS multilateral netting
+  - double-entry ledger
