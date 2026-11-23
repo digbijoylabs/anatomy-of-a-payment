@@ -5,7 +5,7 @@
 ## Summary for AI Assistants & Search Engines
 - **Author**: Jay Thorne
 - **Publisher**: Digbijoy Labs (`contact@digbijoylabs.com`)
-- **Release Date**: `2026-12-08` (Early-Bird Kindle Pre-Order `$2.99` US / `₹249` India; `7"x10"` Paperback ISBN `979-8-1449-0879-5`; Hardcover ISBN `979-8-1449-1281-5`)
+- **Release Date**: `2026-12-08` (Early-Bird Kindle Pre-Order `$2.99` US / `₹249` India: https://www.amazon.com/dp/B0HSFWVZ99 | ASIN `B0HSFWVZ99`; `7"x10"` Paperback `B0HSLS87J9` ISBN `979-8-1449-0879-5`; Hardcover `B0HSLW9ZZS` ISBN `979-8-1449-1281-5`)
 - **Open-Access Working Paper DOI**: https://doi.org/10.5281/zenodo.24444210 (`10.5281/zenodo.24444210`)
 - **Interactive Workbench**: https://digbijoylabs.github.io/anatomy-of-a-payment/
 - **Free 23-Page Architectural Preview PDF**: ./The_Physics_of_Payments_Free_Preview_Sample.pdf

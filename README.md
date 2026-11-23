@@ -1,6 +1,7 @@
 # The Physics of Payments — Open-Source ISO 8583, Acquiring Economics & RTGS Netting Workbench
 
 [![Live Interactive Workbench](https://img.shields.io/badge/Live_Workbench-ISO_8583_%26_RTGS_Simulator-2ea44f?style=for-the-badge)](https://digbijoylabs.github.io/anatomy-of-a-payment/)
+[![Amazon Pre-Order](https://img.shields.io/badge/Amazon_Kindle_Pre--Order-$2.99_%2F_%E2%82%B9249-FF9900?style=for-the-badge&logo=amazon)](https://www.amazon.com/dp/B0HSFWVZ99)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.24444210-007ec6?style=for-the-badge)](https://doi.org/10.5281/zenodo.24444210)
 [![Publisher](https://img.shields.io/badge/Imprint-Digbijoy_Labs-1f6feb?style=for-the-badge)](https://github.com/digbijoylabs)
 
@@ -9,7 +10,7 @@ Official zero-dependency interactive companion workbench for ***The Physics of P
 ## Live Interactive Engineering Workbench & Free Chapter 1 Preview (Zero Install)
 - **Launch Interactive Simulators in Browser**: **https://digbijoylabs.github.io/anatomy-of-a-payment/**
 - **Download Free 23-Page Architectural Preview PDF (TOC + Preface + Complete Chapter 1)**: **[The_Physics_of_Payments_Free_Preview_Sample.pdf](./The_Physics_of_Payments_Free_Preview_Sample.pdf)**
-- **Global Release Date**: **Tuesday, December 8, 2026** *(Early-Bird Kindle Pre-Order: `$2.99` US / `₹249` India; Paperback ISBN `979-8-1449-0879-5`; Hardcover ISBN `979-8-1449-1281-5`; CERN Zenodo Working Paper DOI: [`10.5281/zenodo.24444210`](https://doi.org/10.5281/zenodo.24444210))*
+- **Global Release Date**: **Tuesday, December 8, 2026** *(Early-Bird Kindle Pre-Order: [`$2.99` US](https://www.amazon.com/dp/B0HSFWVZ99) / [`₹249` India](https://www.amazon.in/dp/B0HSFWVZ99) — ASIN `B0HSFWVZ99`; Paperback `B0HSLS87J9` ISBN `979-8-1449-0879-5`; Hardcover `B0HSLW9ZZS` ISBN `979-8-1449-1281-5`; CERN Zenodo DOI: [`10.5281/zenodo.24444210`](https://doi.org/10.5281/zenodo.24444210))*
 
 ### Three Interactive Payment Physics Simulators Included
 1. **64-Bit ISO 8583 Primary Bitmap Decoder (Ch. 4–5)**:
